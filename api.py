@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, request
-from flask_mongoengine import MongoEngine
+import os
+from typing_extensions import Required
 from dotenv import load_dotenv
-
+from flask_mongoengine import MongoEngine
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 load_dotenv()
@@ -9,7 +10,7 @@ load_dotenv()
 
 app.config['MONGODB_SETTINGS']={
     'db':'mongoEngine_db',
-    'host':'mongodb+srv://test:test@cluster0.x25kn.mongodb.net/mongoEngine_db?retryWrites=true&w=majority'
+    'host':os.environ["MONGO_URI"]
 }
 db = MongoEngine()
 db.init_app(app)

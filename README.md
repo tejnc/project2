@@ -34,17 +34,18 @@
 * parmeters are
     1. email
     2. password
-    Note: You need to login again after 45 minutes.
+    
+`Note: You need to login again after 45 minutes.`
 
 ## For listing users(url: <server_address>/users/<page>/<limit>):
-    * You must be logged in and authorized.
-    * Pagination included
+* You must be logged in and authorized.
+* Pagination included
 
 ## For updating user(url: <server_address>/user/<id>):
-    * method: PUT
+* method: PUT
 
 ## For deleting user(url: <server_address>/user/<id>):
-    * method: DELETE
+* method: DELETE
 
 
 

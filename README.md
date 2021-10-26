@@ -14,7 +14,7 @@
     8. password
 
     ##### And they are returned in the format:
-        ``` 
+    
             [
                 {
                     "address"{
@@ -28,7 +28,7 @@
                     "phone_number":"......",
                 }
             ]
-        ```
+        
 
 ## For login api (url: <server_address>/login):
 * parmeters are

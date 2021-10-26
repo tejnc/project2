@@ -3,10 +3,10 @@ import jwt
 import time
 import datetime
 from dotenv import load_dotenv
-from bson.json_util import default, dumps
 from flask_mongoengine import MongoEngine
-from flask import Flask, json, jsonify, request
+from flask import Flask, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 from utils.user_fun import get_user_by_id
 
@@ -126,22 +126,73 @@ def login_user():
         return resp
 
 # protected api
-@app.route("/users")
-def users_list():
+@app.route("/users/<page>/<limit>")
+def users_list(page, limit):
     """ 
         It shows the list of users.
     """
-    
+    _page = page
+    _limit = limit
     users = []
     current_time = time.time()
     exp_time = get_user_by_id(request.headers)["exp"]
     print(exp_time,current_time)
 
+
     if exp_time > current_time:
-        for user in Users.objects.exclude("password"):
-            users.append(user.to_json())
-        return jsonify(users)
+        users = Users.objects.paginate(page=int(_page),per_page=int(_limit))
+        return jsonify([user.to_json() for user in users.items])
         
+        # for user in Users.objects.exclude("password"):
+        #     users.append(user.to_json())
+        # return jsonify(users)
+
+    
+
+# protected api
+@app.route("/user/<id>",methods=["PUT"])
+def update_user(id):
+    _id = id
+    _json = request.json
+    _name = _json["name"]
+    # _gender = _json["gender"]
+    # _phone_number = _json["phone_number"]
+    # _address = {
+    #     "province":_json["province"],
+    #     "district":_json["district"],
+    #     "town":_json["town"]
+    # }
+    # _email = _json["email"]
+    # _password = _json["password"]
+
+
+    current_time = time.time()
+    exp_time = get_user_by_id(request.headers)["exp"]
+    print(exp_time,current_time)
+
+    if exp_time > current_time:
+        user = Users.objects(id=_id)
+        user.update(
+            set__name = _name
+        )
+
+        resp = jsonify("user updated successfully.")
+        resp.status_code = 200
+        return resp
+
+
+
+@app.route("/user/<id>", methods=["DELETE"])
+def delete_user(id):
+    """
+        Deleting user information
+    """
+    _id = id
+    user = Users.objects(id=_id)
+    user.delete()
+
+    return jsonify("user deleted successfully.")
+
 
 if __name__=="__main__":
     app.run(debug=True)
